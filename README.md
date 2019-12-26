@@ -2,6 +2,8 @@
 
 This is a sample Play application that exposes `HomeController` through JMX and the cyclic buffer from Logback, and renders it by querying Jolokia as a client.
 
+This is a companion piece to [Controlling Logging in a Running JVM](https://tersesystems.com/blog/2019/12/24/controlling-logging-in-a-running-jvm/).
+
 ## Building
 
 Start the play application in production mode:
