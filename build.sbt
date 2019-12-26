@@ -10,8 +10,8 @@ lazy val root = (project in file("."))
     resolvers += Resolver.bintrayRepo("tersesystems", "maven"),
     libraryDependencies ++= Seq(
       guice,
-      "com.tersesystems.logback" % "logback-structured-config" % "0.13.1",
       "com.tersesystems.jmxbuilder" % "jmxbuilder" % "0.0.2",
+      "org.jolokia" % "jolokia-client-java" % "2.0.0-M3",
       "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
     ),
     scalacOptions ++= Seq(
@@ -19,14 +19,4 @@ lazy val root = (project in file("."))
       "-deprecation",
       "-Xfatal-warnings"
     ),
-
-    // Point the Play logs at the right place.
-    Docker / defaultLinuxLogsLocation := (Docker / defaultLinuxInstallLocation).value + "/logs",
-    dockerExposedVolumes := Seq((Docker / defaultLinuxLogsLocation).value),
-    dockerEnvVars := Map(
-      "JAVA_TOOL_OPTIONS" -> "-Dpidfile.path=/dev/null",
-      "LOG_DIR" -> (Docker / defaultLinuxLogsLocation).value
-    ),
-    dockerUpdateLatest := true,
-    dockerExposedPorts := Seq(9000, 8778), // expose the jolokia port
 )

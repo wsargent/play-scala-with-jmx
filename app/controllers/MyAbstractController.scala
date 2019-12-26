@@ -9,6 +9,7 @@ import play.api.Logging
 import play.api.inject.ApplicationLifecycle
 import play.api.mvc._
 import javax.inject.Singleton
+import jmx.JMXServer
 
 import scala.concurrent.Future
 
@@ -19,7 +20,7 @@ class MyAbstractController @Inject()(mcc: MyControllerComponents)
 
   override protected def logbackLogger: Logger = logger.logger
 
-  registerWithJMX(new ObjectName(s"play:type=Controller,name=${getClass.getName}"), mcc.lifecycle)
+  registerWithJMX(new ObjectName(s"play:type=Controller,name=${getClass.getName}"), mcc.jmxServer)
 }
 
 trait RegistrationComponent {
@@ -27,18 +28,10 @@ trait RegistrationComponent {
 
   protected def decorateBean(builder: DynamicBean.Builder): DynamicBean.Builder = builder
 
-  protected def registerWithJMX(objectName: ObjectName, lifecycle: ApplicationLifecycle): Unit = {
+  protected def registerWithJMX(objectName: ObjectName, jmxServer: JMXServer): Unit = {
     val bean: DynamicBean = decorateBean(LoggingComponent.jmxBuilder(this)).build
-    registerBean(objectName, bean, lifecycle)
+    jmxServer.registerBean(objectName, bean)
   }
 
-  private def registerBean(objectName: ObjectName, bean: DynamicBean, lifecycle: ApplicationLifecycle): Unit = {
-    import java.lang.management.ManagementFactory
-    val mbs = ManagementFactory.getPlatformMBeanServer
-    mbs.registerMBean(bean, objectName)
-    lifecycle.addStopHook { () =>
-      mbs.unregisterMBean(objectName)
-      Future.successful(())
-    }
-  }
 }
+

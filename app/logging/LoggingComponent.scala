@@ -2,10 +2,7 @@ package logging
 
 import ch.qos.logback.classic
 import com.tersesystems.jmxbuilder.{AttributeInfo, DescriptorSupport, DynamicBean}
-import com.tersesystems.logback.classic.ChangeLogLevel
 import org.slf4j.Logger
-
-import scala.jdk.CollectionConverters._
 
 trait LoggingComponent {
   def setLoggingLevel(level: String): Unit
@@ -27,9 +24,11 @@ trait LogbackLoggingComponent extends LoggingComponent {
 
 object LoggingComponent {
   def jmxBuilder(lc: LoggingComponent): DynamicBean.Builder = {
+    val levelsSet = new java.util.HashSet[String]()
+    java.util.Collections.addAll(levelsSet, "OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE")
     val descriptor = DescriptorSupport.builder()
       .withDisplayName("level")
-      .withLegalValues(Set("OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE").asJava)
+      .withLegalValues(levelsSet)
       .build()
 
     val attributeInfo = AttributeInfo.builder(classOf[String])
