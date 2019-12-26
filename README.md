@@ -4,6 +4,8 @@ This is a sample Play application that exposes `HomeController` through JMX and 
 
 This is a companion piece to [Controlling Logging in a Running JVM](https://tersesystems.com/blog/2019/12/24/controlling-logging-in-a-running-jvm/).
 
+Note that the way that Logback work means that if you want to get a dump of debugging or tracing data while still having a controller set to INFO level, using an appender won't help.  [Ringbuffer logging](https://tersesystems.com/blog/2019/07/28/triggering-diagnostic-logging-on-exception/) through a  [turbofilter](https://github.com/tersesystems/terse-logback#appender-based-ring-buffer) is the way to go there, but that's a bit off track for this example. 
+
 ## Building
 
 Start the play application in production mode:
